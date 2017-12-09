@@ -90,6 +90,7 @@
         Georgi Ivanov
         Damian Flynn
         Gabriel Taylor
+        Lynne Taggart
 
     Related URLs:
         Original Git Repo: https://github.com/slavizh/Get-SCOMManagementPacks
@@ -98,15 +99,13 @@
         Damian Flynn's blog post: http://www.damianflynn.com/2014/08/26/downloading-scom-management-packs-using-powershell/
         Technet Gallery post (v3.0.1): https://gallery.technet.microsoft.com/scriptcenter/All-Management-Packs-for-37d37902
         Stefan Stranger's blog post which started it all: http://blogs.technet.com/b/stefan_stranger/archive/2013/03/13/finding-management-packs-from-microsoft-download-website-using-powershell.aspx
+        https://blogs.technet.microsoft.com/allthat/2017/12/08/fixed-get-scommanagementpacks-ps1/
 
-    Current Version: 4.3
-    - Version 4.3 Changes
-        - Edits: Gabriel Taylor
-        - Date: 21 February 2017
-        - Removed [parameter(Mandatory=$false)] statements (that's a bad practice, my bad)
-        - Updated MP Wiki URL to HTTPS
-        - Updated Switch parameter validation
-        - Updated formatting
+    Current Version: 4.4
+    - Version 4.4 Changes
+        - Edits: Lynne Taggart
+        - Date: 8 December 2017
+        - Updated  $HTTPData formatting
 #>
 
 [CmdletBinding(DefaultParameterSetName="AgeMonths")]
@@ -253,6 +252,17 @@ function Get-MSDownloadVersionDetails
         {
             $Status = "Success"
 
+            if ($HTTPData -match 'Version:\s*</div><p>(.+?)</p></div>')
+            {
+                $MPVersion = $matches[1].Replace("?","").TrimEnd()
+            }
+
+            if ($HTTPData -match 'Date Published:\s*</div><p>(.+?)</p></div>')
+            {
+                $MPPublishDate = $matches[1].Replace("/","-").TrimEnd()
+            }
+
+
             if ($HTTPData -match 'Version:</span></div><p>(.+?)</p></div>')
             {
                 $MPVersion = $matches[1].Replace("?","").TrimEnd()
@@ -262,6 +272,7 @@ function Get-MSDownloadVersionDetails
             {
                 $MPPublishDate = $matches[1].Replace("/","-").TrimEnd()
             }
+
 
         }
         else
